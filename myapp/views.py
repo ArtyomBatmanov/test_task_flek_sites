@@ -6,6 +6,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User, Organization
 from .serializers import UserSerializer, UserCreateSerializer, OrganizationSerializer
 
+
 class RegisterView(APIView):
     def post(self, request):
         serializer = UserCreateSerializer(data=request.data)
@@ -13,6 +14,7 @@ class RegisterView(APIView):
             user = serializer.save()
             return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class LoginView(APIView):
     def post(self, request):
@@ -27,6 +29,7 @@ class LoginView(APIView):
             })
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
+
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -36,6 +39,7 @@ class UserProfileView(APIView):
             return Response({"detail": "User not found", "code": "user_not_found"}, status=404)
         serializer = UserSerializer(user)
         return Response(serializer.data)
+
 
 class OrganizationView(APIView):
     def get(self, request):
@@ -49,3 +53,12 @@ class OrganizationView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
