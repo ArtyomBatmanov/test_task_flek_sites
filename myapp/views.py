@@ -32,7 +32,6 @@ class UserProfileView(APIView):
 
     def get(self, request):
         user = request.user
-        print(f"Request user: {user}")  # Проверь, что пользователь определен
         if not user:
             return Response({"detail": "User not found", "code": "user_not_found"}, status=404)
         serializer = UserSerializer(user)
