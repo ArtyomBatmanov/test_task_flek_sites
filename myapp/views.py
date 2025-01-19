@@ -31,15 +31,12 @@ class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        serializer = UserSerializer(request.user)
+        user = request.user
+        print(f"Request user: {user}")  # Проверь, что пользователь определен
+        if not user:
+            return Response({"detail": "User not found", "code": "user_not_found"}, status=404)
+        serializer = UserSerializer(user)
         return Response(serializer.data)
-
-    def put(self, request):
-        serializer = UserSerializer(request.user, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class OrganizationView(APIView):
     def get(self, request):
