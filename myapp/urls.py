@@ -8,6 +8,6 @@ urlpatterns = [
     path('organizations/', OrganizationView.as_view(), name='organizations'),
     path('users/', UserListView.as_view(), name='user-list'),
     path('organizations/users/', OrganizationListView.as_view(), name='organization-list'),
-    path('users/<int:user_id>/', UserDetailView.as_view(), name='user-detail'),  # Новый маршрут
+    path('users/<int:user_id>/', UserDetailView.as_view(), name='user-detail'),
 
 ]
