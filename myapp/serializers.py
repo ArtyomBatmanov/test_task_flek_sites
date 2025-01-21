@@ -1,10 +1,12 @@
 from rest_framework import serializers
 from .models import User, Organization
 
+
 class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
         fields = '__all__'
+
 
 class UserSerializer(serializers.ModelSerializer):
     organizations = OrganizationSerializer(many=True, read_only=True)
@@ -13,6 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'email', 'first_name', 'last_name', 'phone', 'avatar', 'organizations']
 
+
 class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -20,3 +23,17 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
+
+
+class UserShortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'first_name', 'last_name']
+
+
+class OrganizationDetailSerializer(serializers.ModelSerializer):
+    members = UserShortSerializer(source='members.all', many=True)
+
+    class Meta:
+        model = Organization
+        fields = ['id', 'name', 'description', 'members']

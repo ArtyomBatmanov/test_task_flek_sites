@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User, Organization
-from .serializers import UserSerializer, UserCreateSerializer, OrganizationSerializer
+from .serializers import UserSerializer, UserCreateSerializer, OrganizationSerializer, OrganizationDetailSerializer
 
 
 class RegisterView(APIView):
@@ -74,4 +74,13 @@ class UserDetailView(APIView):
             return Response({"detail": "User not found"}, status=404)
 
         serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+
+class OrganizationListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        organizations = Organization.objects.all()
+        serializer = OrganizationDetailSerializer(organizations, many=True)
         return Response(serializer.data)
